@@ -36,6 +36,38 @@ def prepar_engine_speed(left_engine,right_engine):
 def change_engene_speed_message(left_engine,right_engine):
     return b"v" + prepar_engine_speed(left_engine,right_engine)
 
+def decide_action(Xaxis,Yaxis):
+    if(Xaxis == -1 and Yaxis == 0):
+        return change_engine_speed_message(-255,-255)
+    elif(Xaxis == -1 and Yaxis == 1):
+        return change_engine_speed_message(-255,0)
+    elif(Xaxis == 0 and Yaxis == 1):
+        return  change_engine_speed_message(-255,255)
+    elif(Xaxis == 1 and Yaxis == 1):
+        return change_engine_speed_message(255,0)
+    elif(Xaxis == 1 and Yaxis == 0):
+        return change_engine_speed_message(255,255)
+    elif(Xaxis == 1 and Yaxis == -1):
+        return change_engine_speed_message(0,255)
+    elif(Xaxis == 0 and Yaxis == -1):
+        return change_engine_speed_message(255,-255)
+    elif(Xaxis == -1 and Yaxis == -1):
+        return change_engine_speed_message(0,-255)
+    else :
+        return change_engine_speed_message(0,0)
+
+def process_axis_value(Xaxis,Yaxis,lastXaxis,lastYaxis):
+    if (Xaxis != lastXaxis) or (Yaxis != lastYaxis):
+        print ("X = {}, Y = {}".format(Xaxis,Yaxis))
+        
+        return decide_action(Xaxis,Yaxis)
+
+def send_action(serial,action):
+    serial.write(action)
+    print("wysyłane {}".format(action)) 
+    print("odebrane {}".format(serial.readline()))
+
+
 clock = pygame.time.Clock()
 serial = serial.Serial('/dev/rfcomm1',9600,timeout=1)
 print(serial)
@@ -48,37 +80,9 @@ try:
 
         Yaxis = signum(joystick.get_axis(0))
         Xaxis = signum(joystick.get_axis(1))
-
-        if (Xaxis != lastXaxis) or (Yaxis != lastYaxis):
-            print ("X = {}, Y = {}".format(Xaxis,Yaxis))
-
-            lastXaxis = Xaxis
-            lastYaxis = Yaxis
-            
-            
-            if(Xaxis == -1 and Yaxis == 0):
-                to_send = change_engine_speed_message(-255,-255)
-            elif(Xaxis == -1 and Yaxis == 1):
-                to_send = change_engine_speed_message(-255,0)
-            elif(Xaxis == 0 and Yaxis == 1):
-               to_send =  change_engine_speed_message(-255,255)
-            elif(Xaxis == 1 and Yaxis == 1):
-                to_send = change_engine_speed_message(255,0)
-            elif(Xaxis == 1 and Yaxis == 0):
-                to_send = change_engine_speed_message(255,255)
-            elif(Xaxis == 1 and Yaxis == -1):
-                to_send = change_engine_speed_message(0,255)
-            elif(Xaxis == 0 and Yaxis == -1):
-                to_send =  change_engine_speed_message(255,-255)
-            elif(Xaxis == -1 and Yaxis == -1):
-                to_send = change_engine_speed_message(0,-255)
-            else :
-                to_send = change_engine_speed_message(0,0)
-                
-            serial.write(to_send)
-.            print("wysyłane {}".format(to_send))
-            print("odebrane {}".format(serial.readline()))
-            
+        
+        lastXaxis = Xaxis
+        lastYaxis = Yaxis
 
         clock.tick(10)
 except KeyboardInterrupt:
