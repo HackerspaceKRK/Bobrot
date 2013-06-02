@@ -1,3 +1,22 @@
+"""
+    This program is driver for robot using pad connect to computer.
+    Use UART-like bridge to robot (eg. bluetooth).
+
+    Copyright (C) 2013 Łukasz "BamBucha" Dubiel <bambucha14@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
 import pygame
 import serial
 
@@ -70,14 +89,13 @@ def send_action(serial,action):
 def create_serial() :
     return serial.Serial(config.uart,9600,timeout=1)
 
-
-def process():
+def process(serial):
+    clock = pygame.time.Clock()
+    lastXaxis = 0
+    lastYaxis = 0
     try:
-        clock = pygame.time.Clock()
-        lastXaxis = 0
-        lastYaxis = 0
         while True :
-    
+            joystick = get_joystick()
             Yaxis = signum(joystick.get_axis(0))
             Xaxis = signum(joystick.get_axis(1))
             
@@ -91,7 +109,7 @@ def process():
     except KeyboardInterrupt:
         pass
 
-process()    
+process(create_serial())    
 print ("bye!")
 pygame.quit()
 serial.close()
