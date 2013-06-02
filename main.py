@@ -10,39 +10,39 @@ q = 0
 id=0
 lastXaxis = 0
 lastYaxis = 0
-try:
-    while True :
+done = true
 
-        for event in pygame.event.get(): # User did something
-            if event.type == pygame.QUIT: # If user clicked close
-                done=True # Flag that we are done so we exit this loop
-        
-        # Possible joystick actions: JOYAXISMOTION JOYBALLMOTION JOYBUTTONDOWN JOYBUTTONUP JOYHATMOTION
+def signum(number):
+    if(number == 0):
+        return 0
+    if(number < 0):
+        return -1
+    else:
+        return 1
+
+
+try:
+    while done :
+
+        for event in pygame.event.get(): 
+            if event.type == pygame.QUIT: 
+                done=True         
             if event.type == pygame.JOYBUTTONDOWN:
                 print("Joystick button pressed.")
             if event.type == pygame.JOYBUTTONUP:
                 print("Joystick button released.")
-        print(q)
-        q = q + 1
-
 
         joystick = pygame.joystick.Joystick(id)
         joystick.init()
 
-        name = joystick.get_name()
-        
-        print (name)
-
-        buttons = joystick.get_numbuttons()
-
         axes = joystick.get_numaxes()
-        print("Number of axes: {}".format(axes) )
 
         for i in range(axes):
             print ("Format axis {} = {}".format(i,joystick.get_axis(i)))
 
-        Yaxis = int(joystick.get_axis(0)*2)
-        Xaxis = int(joystick.get_axis(1)*2)
+
+        Yaxis = signum(joystick.get_axis(0))
+        Xaxis = signum(joystick.get_axis(1))
 
         if (Xaxis != lastXaxis) or (Yaxis != lastYaxis):
             print ("X = {}, Y = {}".format(Xaxis,Yaxis))
