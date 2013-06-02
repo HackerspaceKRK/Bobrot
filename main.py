@@ -55,7 +55,6 @@ try:
             lastXaxis = Xaxis
             lastYaxis = Yaxis
             
-            to_send = change_engine_speed_message(0,0)
             
             if(Xaxis == -1 and Yaxis == 0):
                 to_send = change_engine_speed_message(-255,-255)
@@ -73,9 +72,11 @@ try:
                 to_send =  change_engine_speed_message(255,-255)
             elif(Xaxis == -1 and Yaxis == -1):
                 to_send = change_engine_speed_message(0,-255)
+            else :
+                to_send = change_engine_speed_message(0,0)
                 
             serial.write(to_send)
-            print("wysyłane {}".format(to_send))
+.            print("wysyłane {}".format(to_send))
             print("odebrane {}".format(serial.readline()))
             
 
