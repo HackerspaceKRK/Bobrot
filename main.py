@@ -32,14 +32,12 @@ def get_joystick(id):
     joystick.init()
     return joystick
 
+def print_joystic_axis_status(joystick):
+    for i in range(joystick.get_numaxes()):
+        print ("Format axis {} = {}".format(i,joystick.get_axis(i)))
+
 try:
     while done :
-
-        axes = joystick.get_numaxes()
-
-        for i in range(axes):
-            print ("Format axis {} = {}".format(i,joystick.get_axis(i)))
-
 
         Yaxis = signum(joystick.get_axis(0))
         Xaxis = signum(joystick.get_axis(1))
