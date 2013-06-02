@@ -50,24 +50,24 @@ try:
             print ("X = {}, Y = {}".format(Xaxis,Yaxis))
             serial.write(b'v')
             
-            to_send = b"0\r0\r"
+            to_send = prepar_message(0,0)
             
             if(Xaxis == -1 and Yaxis == 0):
-                to_send = b"-255\r-255\r"
+                to_send = prepar_message(-255,-255)
             elif(Xaxis == -1 and Yaxis == 1):
-                to_send = b"-255\r0\r"
+                to_send = prepar_message(-255,0)
             elif(Xaxis == 0 and Yaxis == 1):
-                to_send = b"-255\r255\r"
+               to_send =  prepar_message(-255,255)
             elif(Xaxis == 1 and Yaxis == 1):
-                to_send = b"255\r0\r"
+                to_send = prepar_message(255,0)
             elif(Xaxis == 1 and Yaxis == 0):
-                to_send = b"255\r255\r"
+                to_send = prepar_message(255,255)
             elif(Xaxis == 1 and Yaxis == -1):
-                to_send = b"0\r255\r"
+                to_send = prepar_message(0,255)
             elif(Xaxis == 0 and Yaxis == -1):
-                to_send = b"255\r-255\r"
+                to_send =  prepar_message(255,-255)
             elif(Xaxis == -1 and Yaxis == -1):
-                to_send = b"0\r-255\r"
+                to_send = prepar_message(0,-255)
                 
             serial.write(to_send)
             print("wysyłane {}".format(to_send))
