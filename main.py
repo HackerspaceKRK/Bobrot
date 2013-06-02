@@ -3,14 +3,8 @@ import serial
 
 pygame.init()
 
-clock = pygame.time.Clock()
-serial = serial.Serial('/dev/rfcomm1',9600,timeout=1)
-print(serial)
-q = 0
-id=0
-lastXaxis = 0
-lastYaxis = 0
-done = true
+
+config = {}
 
 def signum(number):
     if(number == 0):
@@ -28,13 +22,23 @@ def dispatch_events():
             print("Joystick button released.")
 
 def get_joystick(id):
-    joystick = pygame.joystick.Joystick(id)
+    joystick = pygame.joystick.Joystick(config.joystick_id)
     joystick.init()
     return joystick
 
 def print_joystic_axis_status(joystick):
     for i in range(joystick.get_numaxes()):
         print ("Format axis {} = {}".format(i,joystick.get_axis(i)))
+
+def prepar_message(left_engine,right_engine):
+    return b"{}\r{}\r".format(left_engine,right_engine)
+
+clock = pygame.time.Clock()
+serial = serial.Serial('/dev/rfcomm1',9600,timeout=1)
+print(serial)
+lastXaxis = 0
+lastYaxis = 0
+done = true
 
 try:
     while done :
