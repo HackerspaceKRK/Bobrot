@@ -1,0 +1,18 @@
+
+* BObrot [ bambucha-otwieracz robot]
+
+Kod sterownika oraz firmware robota (kod w drodze na repo jeszcze)
+stworzony przez Bambucha'e oraz Otwieracza podczas drugiego Nighthacka.
+
+** Użycie
+
+ + Stworzenie kanału do robota.
+
+   =rfcomm connect rfcomm1 [MAC]=
+
+ + Odpalenie kodu pythona
+   
+   =python3 main.py=
+
+ + Enjoy.
+
