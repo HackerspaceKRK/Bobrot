@@ -68,26 +68,31 @@ def send_action(serial,action):
     print("odebrane {}".format(serial.readline()))
 
 
-clock = pygame.time.Clock()
+
 serial = serial.Serial('/dev/rfcomm1',9600,timeout=1)
 print(serial)
-lastXaxis = 0
-lastYaxis = 0
-done = true
 
-try:
-    while done :
+def process():
+    try:
+        clock = pygame.time.Clock()
+        lastXaxis = 0
+        lastYaxis = 0
+        while True :
+    
+            Yaxis = signum(joystick.get_axis(0))
+            Xaxis = signum(joystick.get_axis(1))
+            
+            action = process_axis_value(Xaxis,Yaxis,lastXaxis,lastYaxis)
+            send_action(serial,action)
+    
+            lastXaxis = Xaxis
+            lastYaxis = Yaxis
+    
+            clock.tick(10)
+    except KeyboardInterrupt:
+        pass
 
-        Yaxis = signum(joystick.get_axis(0))
-        Xaxis = signum(joystick.get_axis(1))
-        
-        lastXaxis = Xaxis
-        lastYaxis = Yaxis
-
-        clock.tick(10)
-except KeyboardInterrupt:
-    pass
-
+process()    
 print ("bye!")
 pygame.quit()
 serial.close()
