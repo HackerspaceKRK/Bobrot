@@ -23,7 +23,7 @@ import serial
 pygame.init()
 
 
-config = { "uart" : "/dev/rfcomm1" }
+config = { "uart": "/dev/rfcomm1", "joystick_id" : 0 }
 
 def signum(number):
     if(number == 0):
@@ -41,7 +41,7 @@ def dispatch_events():
             print("Joystick button released.")
 
 def get_joystick(id):
-    joystick = pygame.joystick.Joystick(config.joystick_id)
+    joystick = pygame.joystick.Joystick(id)
     joystick.init()
     return joystick
 
@@ -50,10 +50,11 @@ def print_joystic_axis_status(joystick):
         print ("Format axis {} = {}".format(i,joystick.get_axis(i)))
 
 def prepar_engine_speed(left_engine,right_engine):
-    return b"{}\r{}\r".format(left_engine,right_engine)
+    return 
 
-def change_engene_speed_message(left_engine,right_engine):
-    return b"v" + prepar_engine_speed(left_engine,right_engine)
+
+def change_engine_speed_message(left_engine,right_engine):
+    return "v{}\r{}\r".format(left_engine,right_engine).encode()
 
 def decide_action(Xaxis,Yaxis):
     if(Xaxis == -1 and Yaxis == 0):
@@ -61,7 +62,7 @@ def decide_action(Xaxis,Yaxis):
     elif(Xaxis == -1 and Yaxis == 1):
         return change_engine_speed_message(-255,0)
     elif(Xaxis == 0 and Yaxis == 1):
-        return  change_engine_speed_message(-255,255)
+        return change_engine_speed_message(-255,255)
     elif(Xaxis == 1 and Yaxis == 1):
         return change_engine_speed_message(255,0)
     elif(Xaxis == 1 and Yaxis == 0):
@@ -72,22 +73,23 @@ def decide_action(Xaxis,Yaxis):
         return change_engine_speed_message(255,-255)
     elif(Xaxis == -1 and Yaxis == -1):
         return change_engine_speed_message(0,-255)
-    else :
-        return change_engine_speed_message(0,0)
+    return change_engine_speed_message(0,0)
 
 def process_axis_value(Xaxis,Yaxis,lastXaxis,lastYaxis):
     if (Xaxis != lastXaxis) or (Yaxis != lastYaxis):
-        print ("X = {}, Y = {}".format(Xaxis,Yaxis))
+        #print ("X = {}, Y = {}".format(Xaxis,Yaxis))
         return decide_action(Xaxis,Yaxis)
+    return b""
 
 def send_action(serial,action):
+    #print(action)
     serial.write(action)
-    print("wysyłane {}".format(action)) 
-    print("odebrane {}".format(serial.readline()))
+    #print("wysyłane {}".format(action)) 
+    #print("odebrane {}".format(serial.readline()))
 
 
 def create_serial() :
-    return serial.Serial(config.uart,9600,timeout=1)
+    return serial.Serial(config["uart"],9600,timeout=1)
 
 def process(serial):
     clock = pygame.time.Clock()
@@ -95,10 +97,11 @@ def process(serial):
     lastYaxis = 0
     try:
         while True :
-            joystick = get_joystick()
+            dispatch_events()
+            joystick = get_joystick(config["joystick_id"])
             Yaxis = signum(joystick.get_axis(0))
             Xaxis = signum(joystick.get_axis(1))
-            
+            #print_joystic_axis_status(joystick)
             action = process_axis_value(Xaxis,Yaxis,lastXaxis,lastYaxis)
             send_action(serial,action)
     
@@ -108,8 +111,8 @@ def process(serial):
             clock.tick(10)
     except KeyboardInterrupt:
         pass
-
-process(create_serial())    
+serial = create_serial()
+process(serial)    
 print ("bye!")
 pygame.quit()
 serial.close()
