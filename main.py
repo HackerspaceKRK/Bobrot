@@ -51,6 +51,9 @@ try:
 
         if (Xaxis != lastXaxis) or (Yaxis != lastYaxis):
             print ("X = {}, Y = {}".format(Xaxis,Yaxis))
+
+            lastXaxis = Xaxis
+            lastYaxis = Yaxis
             
             to_send = change_engine_speed_message(0,0)
             
@@ -75,8 +78,6 @@ try:
             print("wysyłane {}".format(to_send))
             print("odebrane {}".format(serial.readline()))
             
-            lastXaxis = Xaxis
-            lastYaxis = Yaxis
 
         clock.tick(10)
 except KeyboardInterrupt:
