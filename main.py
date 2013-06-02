@@ -20,20 +20,20 @@ def signum(number):
     else:
         return 1
 
+def dispatch_events():
+    for event in pygame.event.get(): 
+        if event.type == pygame.JOYBUTTONDOWN:
+            print("Joystick button pressed.")
+        if event.type == pygame.JOYBUTTONUP:
+            print("Joystick button released.")
+
+def get_joystick(id):
+    joystick = pygame.joystick.Joystick(id)
+    joystick.init()
+    return joystick
 
 try:
     while done :
-
-        for event in pygame.event.get(): 
-            if event.type == pygame.QUIT: 
-                done=True         
-            if event.type == pygame.JOYBUTTONDOWN:
-                print("Joystick button pressed.")
-            if event.type == pygame.JOYBUTTONUP:
-                print("Joystick button released.")
-
-        joystick = pygame.joystick.Joystick(id)
-        joystick.init()
 
         axes = joystick.get_numaxes()
 
