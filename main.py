@@ -4,7 +4,7 @@ import serial
 pygame.init()
 
 
-config = {}
+config = { "uart" : "/dev/rfcomm1" }
 
 def signum(number):
     if(number == 0):
@@ -59,7 +59,6 @@ def decide_action(Xaxis,Yaxis):
 def process_axis_value(Xaxis,Yaxis,lastXaxis,lastYaxis):
     if (Xaxis != lastXaxis) or (Yaxis != lastYaxis):
         print ("X = {}, Y = {}".format(Xaxis,Yaxis))
-        
         return decide_action(Xaxis,Yaxis)
 
 def send_action(serial,action):
@@ -68,9 +67,9 @@ def send_action(serial,action):
     print("odebrane {}".format(serial.readline()))
 
 
+def create_serial() :
+    return serial.Serial(config.uart,9600,timeout=1)
 
-serial = serial.Serial('/dev/rfcomm1',9600,timeout=1)
-print(serial)
 
 def process():
     try:
